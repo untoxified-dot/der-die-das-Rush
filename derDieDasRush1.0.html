@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Der Die Das Rush</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#0f172a;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.container{
+    width:90%;
+    max-width:800px;
+    text-align:center;
+}
+
+h1{
+    margin-bottom:15px;
+}
+
+#levelSelect{
+    padding:10px;
+    font-size:18px;
+    margin-bottom:15px;
+    border-radius:8px;
+}
+
+.stats{
+    display:flex;
+    justify-content:space-between;
+    font-size:20px;
+    margin:15px 0;
+}
+
+#timerContainer{
+    width:100%;
+    height:18px;
+    background:#334155;
+    border-radius:10px;
+    overflow:hidden;
+    margin-bottom:25px;
+}
+
+#timerBar{
+    width:100%;
+    height:100%;
+    background:#22c55e;
+}
+
+#word{
+    font-size:70px;
+    margin:35px 0;
+    min-height:90px;
+}
+
+.buttons{
+    display:flex;
+    gap:10px;
+}
+
+button{
+    flex:1;
+    padding:18px;
+    font-size:26px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    color:white;
+}
+
+.der{ background:#2563eb; }
+.die{ background:#dc2626; }
+.das{ background:#16a34a; }
+
+#message{
+    margin-top:20px;
+    min-height:40px;
+    font-size:24px;
+}
+
+#startBtn{
+    margin-top:20px;
+    padding:14px 30px;
+    font-size:22px;
+    border:none;
+    border-radius:10px;
+    background:#f59e0b;
+    cursor:pointer;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <h1>🇩🇪📚 Der Die Das Rush</h1>
+
+    <select id="levelSelect">
+        <option value="A1">A1</option>
+        <option value="A2">A2</option>
+        <option value="B1">B1</option>
+        <option value="B2">B2</option>
+    </select>
+
+    <div class="stats">
+        <div>Score: <span id="score">0</span></div>
+        <div>Lives: <span id="lives">3</span></div>
+        <div>Combo: <span id="combo">0</span></div>
+    </div>
+
+    <div id="timerContainer">
+        <div id="timerBar"></div>
+    </div>
+
+    <div id="word">Press Start</div>
+
+    <div class="buttons">
+        <button class="der" onclick="answer('der')">A - DER</button>
+        <button class="die" onclick="answer('die')">S - DIE</button>
+        <button class="das" onclick="answer('das')">D - DAS</button>
+    </div>
+
+    <div id="message"></div>
+
+    <button id="startBtn">Start Game</button>
+
+</div>
+
+<script>
+
+let words = [];
+let currentWord = null;
+
+let score = 0;
+let lives = 3;
+let combo = 0;
+
+let gameRunning = false;
+let timer;
+let timeLimit = 5000;
+
+async function loadWords(){
+
+    const res = await fetch("words.json");
+    words = await res.json();
+}
+
+function getPool(){
+
+    const level = document.getElementById("levelSelect").value;
+
+    return words.filter(w => w.level === level);
+}
+
+function randomWord(){
+
+    const pool = getPool();
+
+    return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function updateUI(){
+
+    document.getElementById("score").textContent = score;
+    document.getElementById("lives").textContent = lives;
+    document.getElementById("combo").textContent = combo;
+}
+
+function startGame(){
+
+    if(words.length === 0){
+        alert("words.json not loaded yet");
+        return;
+    }
+
+    score = 0;
+    lives = 3;
+    combo = 0;
+    gameRunning = true;
+
+    updateUI();
+
+    document.getElementById("message").innerHTML = "";
+    document.getElementById("startBtn").style.display = "none";
+
+    nextWord();
+}
+
+function nextWord(){
+
+    currentWord = randomWord();
+
+    document.getElementById("word").textContent =
+        currentWord.word;
+
+    timeLimit = Math.max(1500, 5000 - combo * 50);
+
+    startTimer(timeLimit);
+}
+
+function startTimer(limit){
+
+    clearInterval(timer);
+
+    let remaining = limit;
+
+    const bar = document.getElementById("timerBar");
+    bar.style.width = "100%";
+
+    timer = setInterval(()=>{
+
+        remaining -= 20;
+
+        bar.style.width =
+            (remaining / limit * 100) + "%";
+
+        if(remaining <= 0){
+            clearInterval(timer);
+            wrong();
+        }
+
+    },20);
+}
+
+function answer(choice){
+
+    if(!gameRunning) return;
+
+    clearInterval(timer);
+
+    if(choice === currentWord.article){
+
+        score++;
+        combo++;
+
+        document.getElementById("message").innerHTML =
+            "✅ Correct";
+
+        updateUI();
+        nextWord();
+
+    } else {
+
+        wrong();
+    }
+}
+
+function wrong(){
+
+    lives--;
+    combo = 0;
+
+    updateUI();
+
+    document.getElementById("message").innerHTML =
+        `❌ ${currentWord.article} ${currentWord.word}`;
+
+    if(lives <= 0){
+
+        setTimeout(gameOver, 1000);
+        return;
+    }
+
+    setTimeout(nextWord, 1000);
+}
+
+function gameOver(){
+
+    gameRunning = false;
+    clearInterval(timer);
+
+    document.getElementById("word").innerHTML =
+        "GAME OVER";
+
+    document.getElementById("message").innerHTML =
+        `Final Score: ${score}`;
+
+    document.getElementById("startBtn").style.display =
+        "inline-block";
+}
+
+document.getElementById("startBtn")
+.addEventListener("click", startGame);
+
+document.addEventListener("keydown",(e)=>{
+
+    const k = e.key.toLowerCase();
+
+    if(k === "a") answer("der");
+    if(k === "s") answer("die");
+    if(k === "d") answer("das");
+
+});
+
+loadWords();
+
+</script>
+
+</body>
+</html>
