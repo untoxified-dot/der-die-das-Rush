@@ -227,7 +227,7 @@
   {"word":"Garage","article":"die","level":"A1"},
   {"word":"Gartenhaus","article":"das","level":"A1"},
   {"word":"Nachbar","article":"der","level":"A1"},
-  {"word":"Straßenbahn","article":"die","level":"A1"}
+  {"word":"Straßenbahn","article":"die","level":"A1"},
  
   {"word":"Telefonbuch","article":"das","level":"A1"},
   {"word":"Adresse","article":"die","level":"A1"},
@@ -453,7 +453,7 @@
   {"word":"Prüfung","article":"die","level":"A2"},
   {"word":"Note","article":"die","level":"A2"},
   {"word":"Hausaufgabe","article":"die","level":"A2"},
-  {"word":"Lernen","article":"das","level":"A2"}
+  {"word":"Lernen","article":"das","level":"A2"},
 
   {"word":"Flughafen","article":"der","level":"A2"},
   {"word":"Flug","article":"der","level":"A2"},
