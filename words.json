@@ -118,7 +118,7 @@
   {"word":"Stadtzentrum","article":"das","level":"A1"},
   {"word":"Bahnhof","article":"der","level":"A1"},
   {"word":"Bus","article":"der","level":"A1"},
-  {"word":"Zug","article":"der","level":"A1"}
+  {"word":"Zug","article":"der","level":"A1"},
 
 
   {"word":"Kaffee","article":"der","level":"A1"},
@@ -335,7 +335,7 @@
   {"word":"Welt","article":"die","level":"A1"},
   {"word":"Landkarte","article":"die","level":"A1"},
   {"word":"Kontinent","article":"der","level":"A1"},
-  {"word":"Ozean","article":"der","level":"A1"}
+  {"word":"Ozean","article":"der","level":"A1"},
 
 
 
@@ -573,7 +573,7 @@
   {"word":"Temperatur","article":"die","level":"A2"},
   {"word":"Grad","article":"der","level":"A2"},
   {"word":"Klima","article":"das","level":"A2"},
-  {"word":"Vorhersage","article":"die","level":"A2"}
+  {"word":"Vorhersage","article":"die","level":"A2"},
 
 
   {"word":"Politik","article":"die","level":"A2"},
@@ -688,7 +688,7 @@
   {"word":"Punkt","article":"der","level":"A2"},
   {"word":"Rekord","article":"der","level":"A2"},
   {"word":"Meister","article":"der","level":"A2"},
-  {"word":"Champion","article":"der","level":"A2"}
+  {"word":"Champion","article":"der","level":"A2"},
 
 
 
@@ -805,7 +805,7 @@
   {"word":"Innovation","article":"die","level":"B1"},
   {"word":"Digitalisierung","article":"die","level":"B1"},
   {"word":"Automatisierung","article":"die","level":"B1"},
-  {"word":"System","article":"das","level":"B1"}
+  {"word":"System","article":"das","level":"B1"},
 
 
 
@@ -915,7 +915,7 @@
   {"word":"Bedeutung","article":"die","level":"B1"},
   {"word":"Symbol","article":"das","level":"B1"},
   {"word":"Zeichen","article":"das","level":"B1"},
-  {"word":"Sprache","article":"die","level":"B1"}
+  {"word":"Sprache","article":"die","level":"B1"},
 
 
   {"word":"Kommunikation","article":"die","level":"B1"},
@@ -1024,7 +1024,7 @@
   {"word":"Digitalisierung","article":"die","level":"B1"},
   {"word":"Automatisierung","article":"die","level":"B1"},
   {"word":"Künstliche Intelligenz","article":"die","level":"B1"},
-  {"word":"Innovation","article":"die","level":"B1"}
+  {"word":"Innovation","article":"die","level":"B1"},
 
 
 
@@ -1136,7 +1136,7 @@
   {"word":"Rolle","article":"die","level":"B2"},
   {"word":"Norm","article":"die","level":"B2"},
   {"word":"Wert","article":"der","level":"B2"},
-  {"word":"Ethik","article":"die","level":"B2"}
+  {"word":"Ethik","article":"die","level":"B2"},
 
 
 
@@ -1252,7 +1252,7 @@
   {"word":"Realität","article":"die","level":"B2"},
   {"word":"Wahrheit","article":"die","level":"B2"},
   {"word":"Fiktion","article":"die","level":"B2"},
-  {"word":"Interpretation","article":"die","level":"B2"}
+  {"word":"Interpretation","article":"die","level":"B2"},
 
 
 
