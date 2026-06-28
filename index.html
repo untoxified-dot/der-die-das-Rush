@@ -101,6 +101,18 @@ button{
     background:#f59e0b;
     cursor:pointer;
 }
+
+#survivalBtn{
+    margin-top:20px;
+    padding:14px 30px;
+    font-size:22px;
+    border:none;
+    border-radius:10px;
+    background:#7c3aed;
+    cursor:pointer;
+    color:white;
+}
+    
 </style>
 
 </head>
@@ -121,6 +133,7 @@ button{
         <div>Score: <span id="score">0</span></div>
         <div>Lives: <span id="lives">3</span></div>
         <div>Combo: <span id="combo">0</span></div>
+        <div>High: <span id="highscore">0</span></div>
     </div>
 
     <div id="timerContainer">
@@ -137,7 +150,8 @@ button{
 
     <div id="message"></div>
 
-    <button id="startBtn">Start Game</button>
+    <button id="startBtn">Start Classic</button>
+    <button id="survivalBtn">Survival Mode</button>
 
 </div>
 
@@ -150,6 +164,10 @@ let score = 0;
 let lives = 3;
 let combo = 0;
 
+let survivalMode = false;
+
+let highscore = Number(localStorage.getItem("dddHighscore")) || 0;
+    
 let gameRunning = false;
 let timer;
 let timeLimit = 5000;
@@ -179,14 +197,36 @@ function updateUI(){
     document.getElementById("score").textContent = score;
     document.getElementById("lives").textContent = lives;
     document.getElementById("combo").textContent = combo;
+    document.getElementById("highscore").textContent = highscore;
 }
 
-function startGame(){
+function startGame(mode = false){
+
+    survivalMode = mode;
 
     if(words.length === 0){
         alert("words.json not loaded yet");
         return;
     }
+
+    score = 0;
+    lives = 3;
+    combo = 0;
+
+    gameRunning = true;
+
+    updateUI();
+
+    document.getElementById("message").innerHTML = "";
+
+    document.getElementById("startBtn").style.display =
+        "none";
+
+    document.getElementById("survivalBtn").style.display =
+        "none";
+
+    nextWord();
+}
 
     score = 0;
     lives = 3;
@@ -208,7 +248,14 @@ function nextWord(){
     document.getElementById("word").textContent =
         currentWord.word;
 
-    timeLimit = Math.max(1500, 5000 - combo * 50);
+    if(survivalMode){
+
+    timeLimit =Math.max(700, 3500 - score * 15);
+
+}else{
+
+    timeLimit =Math.max(1500, 5000 - combo * 50);
+}
 
     startTimer(timeLimit);
 }
@@ -245,8 +292,28 @@ function answer(choice){
 
     if(choice === currentWord.article){
 
-        score++;
-        combo++;
+    combo++;
+
+    let bonus =
+        Math.floor(combo / 5);
+
+    score += 1 + bonus;
+
+    let remainingPercent =
+        parseFloat(
+            document.getElementById("timerBar")
+            .style.width
+        ) || 0;
+
+    if(remainingPercent > 70){
+        score += 2;
+    }
+
+    document.getElementById("message").innerHTML =
+        `✅ +${1 + bonus}`;
+
+    updateUI();
+    nextWord();
 
         document.getElementById("message").innerHTML =
             "✅ Correct";
@@ -281,6 +348,15 @@ function wrong(){
 
 function gameOver(){
 
+if(score > highscore){
+
+    highscore = score;
+
+    localStorage.setItem("dddHighscore",highscore);
+}
+    
+    updateUI();
+    
     gameRunning = false;
     clearInterval(timer);
 
@@ -295,7 +371,10 @@ function gameOver(){
 }
 
 document.getElementById("startBtn")
-.addEventListener("click", startGame);
+.addEventListener("click", () => startGame(false));
+
+document.getElementById("survivalBtn")
+.addEventListener("click", () => startGame(true));
 
 document.addEventListener("keydown",(e)=>{
 
