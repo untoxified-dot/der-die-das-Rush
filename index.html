@@ -4,391 +4,643 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Der Die Das Rush</title>
-
 <style>
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-    font-family:Arial,sans-serif;
-}
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
 
-body{
-    background:#0f172a;
-    color:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-}
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 
-.container{
-    width:90%;
-    max-width:800px;
-    text-align:center;
-}
+  :root {
+    --bg:        #0b0f1a;
+    --surface:   #141927;
+    --border:    #1e2a40;
+    --der:       #2563eb;
+    --der-glow:  #3b82f640;
+    --die:       #dc2626;
+    --die-glow:  #ef444440;
+    --das:       #16a34a;
+    --das-glow:  #22c55e40;
+    --gold:      #f59e0b;
+    --text:      #f0f4ff;
+    --muted:     #64748b;
+    --timer-ok:  #22c55e;
+    --timer-warn:#f59e0b;
+    --timer-bad: #ef4444;
+  }
 
-h1{
-    margin-bottom:15px;
-}
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+  }
 
-#levelSelect{
-    padding:10px;
-    font-size:18px;
-    margin-bottom:15px;
-    border-radius:8px;
-}
+  .container {
+    width: 100%;
+    max-width: 560px;
+    text-align: center;
+  }
 
-.stats{
-    display:flex;
-    justify-content:space-between;
-    font-size:20px;
-    margin:15px 0;
-}
+  /* ── Header ── */
+  .header {
+    margin-bottom: 24px;
+  }
+  .header h1 {
+    font-size: clamp(22px, 5vw, 30px);
+    font-weight: 900;
+    letter-spacing: -0.5px;
+  }
+  .header p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 4px;
+  }
 
-#timerContainer{
-    width:100%;
-    height:18px;
-    background:#334155;
-    border-radius:10px;
-    overflow:hidden;
-    margin-bottom:25px;
-}
+  /* ── Level selector ── */
+  .level-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .level-btn {
+    padding: 6px 18px;
+    border-radius: 20px;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .level-btn.active {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: #f59e0b15;
+  }
 
-#timerBar{
-    width:100%;
-    height:100%;
-    background:#22c55e;
-}
+  /* ── Stats bar ── */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .stat-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 6px;
+  }
+  .stat-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+  }
+  .stat-value {
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 1;
+  }
+  #comboVal { color: var(--gold); }
 
-#word{
-    font-size:70px;
-    margin:35px 0;
-    min-height:90px;
-}
+  /* ── Timer bar ── */
+  .timer-wrap {
+    width: 100%;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  #timerBar {
+    height: 100%;
+    width: 100%;
+    background: var(--timer-ok);
+    border-radius: 3px;
+    transition: background 0.3s;
+  }
 
-.buttons{
-    display:flex;
-    gap:10px;
-}
+  /* ── Word display ── */
+  #wordDisplay {
+    font-size: clamp(48px, 12vw, 80px);
+    font-weight: 900;
+    letter-spacing: -2px;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+    transition: opacity 0.1s;
+  }
+  #wordDisplay.flash {
+    opacity: 0;
+  }
 
-button{
-    flex:1;
-    padding:18px;
-    font-size:26px;
-    border:none;
-    border-radius:12px;
-    cursor:pointer;
-    color:white;
-}
+  /* ── Answer buttons ── */
+  .buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .ans-btn {
+    flex: 1;
+    padding: 18px 8px;
+    font-size: clamp(18px, 4vw, 26px);
+    font-weight: 700;
+    border: 2px solid transparent;
+    border-radius: 14px;
+    cursor: pointer;
+    color: white;
+    transition: transform 0.1s, box-shadow 0.1s;
+    position: relative;
+    overflow: hidden;
+  }
+  .ans-btn:active { transform: scale(0.96); }
+  .ans-btn .key-hint {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    opacity: 0.55;
+    margin-bottom: 2px;
+  }
+  .btn-der { background: var(--der); box-shadow: 0 4px 20px var(--der-glow); }
+  .btn-die { background: var(--die); box-shadow: 0 4px 20px var(--die-glow); }
+  .btn-das { background: var(--das); box-shadow: 0 4px 20px var(--das-glow); }
+  .btn-der:hover { box-shadow: 0 4px 30px #3b82f670; }
+  .btn-die:hover { box-shadow: 0 4px 30px #ef444470; }
+  .btn-das:hover { box-shadow: 0 4px 30px #22c55e70; }
 
-.der{ background:#2563eb; }
-.die{ background:#dc2626; }
-.das{ background:#16a34a; }
+  /* ── Message ── */
+  #message {
+    min-height: 36px;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  #message.correct { color: #4ade80; }
+  #message.wrong   { color: #f87171; }
 
-#message{
-    margin-top:20px;
-    min-height:40px;
-    font-size:24px;
-}
+  /* ── Start screen ── */
+  #startScreen {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+  .mode-btn {
+    width: 100%;
+    max-width: 300px;
+    padding: 16px 24px;
+    font-size: 18px;
+    font-weight: 700;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: transform 0.1s, filter 0.15s;
+  }
+  .mode-btn:active { transform: scale(0.97); }
+  .mode-btn:hover  { filter: brightness(1.1); }
+  .btn-classic  { background: var(--gold); color: #0b0f1a; }
+  .btn-survival { background: #7c3aed; color: white; }
 
-#startBtn{
-    margin-top:20px;
-    padding:14px 30px;
-    font-size:22px;
-    border:none;
-    border-radius:10px;
-    background:#f59e0b;
-    cursor:pointer;
-}
+  .mode-desc {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: -6px;
+  }
 
-#survivalBtn{
-    margin-top:20px;
-    padding:14px 30px;
-    font-size:22px;
-    border:none;
-    border-radius:10px;
-    background:#7c3aed;
-    cursor:pointer;
-    color:white;
-}
-    
+  /* ── Streak / lives visual ── */
+  .lives-dots {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 4px;
+  }
+  .life-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ef4444;
+    transition: opacity 0.2s;
+  }
+  .life-dot.lost { opacity: 0.2; }
+
+  /* ── Game over ── */
+  #gameOverScreen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .go-title {
+    font-size: 40px;
+    font-weight: 900;
+  }
+  .go-score {
+    font-size: 60px;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .go-sub {
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .go-new-best {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gold);
+    display: none;
+  }
+
+  /* ── Survival badge ── */
+  #modeBadge {
+    display: none;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: #7c3aed30;
+    color: #a78bfa;
+    border: 1px solid #7c3aed60;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 </style>
-
 </head>
 <body>
-
 <div class="container">
 
-    <h1>🇩🇪📚 Der Die Das Rush</h1>
+  <!-- Header -->
+  <div class="header">
+    <h1>🇩🇪 Der Die Das Rush</h1>
+    <p>Press A · S · D or tap to answer</p>
+  </div>
 
-    <select id="levelSelect">
-        <option value="A1">A1</option>
-        <option value="A2">A2</option>
-        <option value="B1">B1</option>
-        <option value="B2">B2</option>
-    </select>
+  <!-- Level selector -->
+  <div class="level-row">
+    <button class="level-btn active" data-level="A1">A1</button>
+    <button class="level-btn" data-level="A2">A2</button>
+    <button class="level-btn" data-level="B1">B1</button>
+    <button class="level-btn" data-level="B2">B2</button>
+  </div>
 
-    <div class="stats">
-        <div>Score: <span id="score">0</span></div>
-        <div>Lives: <span id="lives">3</span></div>
-        <div>Combo: <span id="combo">0</span></div>
-        <div>High: <span id="highscore">0</span></div>
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-box">
+      <div class="stat-label">Score</div>
+      <div class="stat-value" id="scoreVal">0</div>
     </div>
-
-    <div id="timerContainer">
-        <div id="timerBar"></div>
+    <div class="stat-box">
+      <div class="stat-label">Lives</div>
+      <div class="stat-value" id="livesVal">❤️❤️❤️</div>
     </div>
-
-    <div id="word">Press Start</div>
-
-    <div class="buttons">
-        <button class="der" onclick="answer('der')">A - DER</button>
-        <button class="die" onclick="answer('die')">S - DIE</button>
-        <button class="das" onclick="answer('das')">D - DAS</button>
+    <div class="stat-box">
+      <div class="stat-label">Combo</div>
+      <div class="stat-value" id="comboVal">0</div>
     </div>
+    <div class="stat-box">
+      <div class="stat-label">Best</div>
+      <div class="stat-value" id="highVal">0</div>
+    </div>
+  </div>
 
-    <div id="message"></div>
+  <!-- Timer -->
+  <div class="timer-wrap">
+    <div id="timerBar"></div>
+  </div>
 
-    <button id="startBtn">Start Classic</button>
-    <button id="survivalBtn">Survival Mode</button>
+  <!-- Mode badge (shows during survival) -->
+  <div id="modeBadge">⚡ Survival</div>
+
+  <!-- Word -->
+  <div id="wordDisplay">Press Start</div>
+
+  <!-- Buttons -->
+  <div class="buttons">
+    <button class="ans-btn btn-der" onclick="answer('der')">
+      <span class="key-hint">A</span>DER
+    </button>
+    <button class="ans-btn btn-die" onclick="answer('die')">
+      <span class="key-hint">S</span>DIE
+    </button>
+    <button class="ans-btn btn-das" onclick="answer('das')">
+      <span class="key-hint">D</span>DAS
+    </button>
+  </div>
+
+  <!-- Message -->
+  <div id="message"></div>
+
+  <!-- Start screen -->
+  <div id="startScreen">
+    <button class="mode-btn btn-classic" id="startBtn">▶ Classic Mode</button>
+    <div class="mode-desc">5 seconds per word · combo bonuses · speed scales with streak</div>
+    <button class="mode-btn btn-survival" id="survivalBtn">⚡ Survival Mode</button>
+    <div class="mode-desc">Time shrinks with every correct answer · how far can you go?</div>
+  </div>
+
+  <!-- Game over screen -->
+  <div id="gameOverScreen">
+    <div class="go-title">Game Over</div>
+    <div class="go-score" id="goScore">0</div>
+    <div class="go-sub" id="goSub"></div>
+    <div class="go-new-best" id="goNewBest">🏆 New Best!</div>
+    <button class="mode-btn btn-classic" id="playAgainBtn">Play Again</button>
+  </div>
 
 </div>
 
 <script>
-
-let words = [];
-let currentWord = null;
-
-let score = 0;
-let lives = 3;
-let combo = 0;
-
+// ── State ──────────────────────────────────────────────
+let words        = [];
+let currentWord  = null;
+let score        = 0;
+let lives        = 3;
+let combo        = 0;
 let survivalMode = false;
+let gameRunning  = false;
+let timer        = null;
+let timeLimit    = 5000;
+let lastMode     = false;
+let selectedLevel= 'A1';
 
-let highscore = Number(localStorage.getItem("dddHighscore")) || 0;
-    
-let gameRunning = false;
-let timer;
-let timeLimit = 5000;
+let highscore = Number(localStorage.getItem('dddHighscore')) || 0;
 
-async function loadWords(){
-
-    const res = await fetch("./words.json");
+// ── Load words ─────────────────────────────────────────
+async function loadWords() {
+  try {
+    const res = await fetch('./words.json');
     words = await res.json();
+  } catch(e) {
+    console.warn('words.json not found – using built-in demo words');
+    words = [
+      // A1 demos
+      {word:'Mann',     article:'der', level:'A1'},
+      {word:'Frau',     article:'die', level:'A1'},
+      {word:'Kind',     article:'das', level:'A1'},
+      {word:'Tisch',    article:'der', level:'A1'},
+      {word:'Lampe',    article:'die', level:'A1'},
+      {word:'Buch',     article:'das', level:'A1'},
+      {word:'Hund',     article:'der', level:'A1'},
+      {word:'Katze',    article:'die', level:'A1'},
+      {word:'Haus',     article:'das', level:'A1'},
+      {word:'Auto',     article:'das', level:'A1'},
+      {word:'Schule',   article:'die', level:'A1'},
+      {word:'Lehrer',   article:'der', level:'A1'},
+      // A2 demos
+      {word:'Bahnhof',  article:'der', level:'A2'},
+      {word:'Zeitung',  article:'die', level:'A2'},
+      {word:'Fenster',  article:'das', level:'A2'},
+      {word:'Brücke',   article:'die', level:'A2'},
+      {word:'Drucker',  article:'der', level:'A2'},
+      {word:'Gebäude',  article:'das', level:'A2'},
+      // B1 demos
+      {word:'Vertrag',  article:'der', level:'B1'},
+      {word:'Erfahrung',article:'die', level:'B1'},
+      {word:'Ergebnis', article:'das', level:'B1'},
+      {word:'Bericht',  article:'der', level:'B1'},
+      {word:'Sprache',  article:'die', level:'B1'},
+      // B2 demos
+      {word:'Einfluss', article:'der', level:'B2'},
+      {word:'Stimmung', article:'die', level:'B2'},
+      {word:'Verhältnis',article:'das',level:'B2'},
+      {word:'Vorwurf',  article:'der', level:'B2'},
+    ];
+  }
+  document.getElementById('highVal').textContent = highscore;
 }
 
-function getPool(){
-
-    const level = document.getElementById("levelSelect").value;
-
-    return words.filter(w => w.level === level);
-}
-
-function randomWord(){
-
-    const pool = getPool();
-
-    return pool[Math.floor(Math.random() * pool.length)];
-}
-
-function updateUI(){
-
-    document.getElementById("score").textContent = score;
-    document.getElementById("lives").textContent = lives;
-    document.getElementById("combo").textContent = combo;
-    document.getElementById("highscore").textContent = highscore;
-}
-
-function startGame(mode = false){
-
-    survivalMode = mode;
-
-    if(words.length === 0){
-        alert("words.json not loaded yet");
-        return;
-    }
-
-    score = 0;
-    lives = 3;
-    combo = 0;
-
-    gameRunning = true;
-
-    updateUI();
-
-    document.getElementById("message").innerHTML = "";
-
-    document.getElementById("startBtn").style.display =
-        "none";
-
-    document.getElementById("survivalBtn").style.display =
-        "none";
-
-    nextWord();
-}
-
-    score = 0;
-    lives = 3;
-    combo = 0;
-    gameRunning = true;
-
-    updateUI();
-
-    document.getElementById("message").innerHTML = "";
-    document.getElementById("startBtn").style.display = "none";
-
-    nextWord();
-}
-
-function nextWord(){
-
-    currentWord = randomWord();
-
-    document.getElementById("word").textContent =
-        currentWord.word;
-
-    if(survivalMode){
-
-    timeLimit =Math.max(700, 3500 - score * 15);
-
-}else{
-
-    timeLimit =Math.max(1500, 5000 - combo * 50);
-}
-
-    startTimer(timeLimit);
-}
-
-function startTimer(limit){
-
-    clearInterval(timer);
-
-    let remaining = limit;
-
-    const bar = document.getElementById("timerBar");
-    bar.style.width = "100%";
-
-    timer = setInterval(()=>{
-
-        remaining -= 20;
-
-        bar.style.width =
-            (remaining / limit * 100) + "%";
-
-        if(remaining <= 0){
-            clearInterval(timer);
-            wrong();
-        }
-
-    },20);
-}
-
-function answer(choice){
-
-    if(!gameRunning) return;
-
-    clearInterval(timer);
-
-    if(choice === currentWord.article){
-
-    combo++;
-
-    let bonus =
-        Math.floor(combo / 5);
-
-    score += 1 + bonus;
-
-    let remainingPercent =
-        parseFloat(
-            document.getElementById("timerBar")
-            .style.width
-        ) || 0;
-
-    if(remainingPercent > 70){
-        score += 2;
-    }
-
-    document.getElementById("message").innerHTML =
-        `✅ +${1 + bonus}`;
-
-    updateUI();
-    nextWord();
-
-        document.getElementById("message").innerHTML =
-            "✅ Correct";
-
-        updateUI();
-        nextWord();
-
-    } else {
-
-        wrong();
-    }
-}
-
-function wrong(){
-
-    lives--;
-    combo = 0;
-
-    updateUI();
-
-    document.getElementById("message").innerHTML =
-        `❌ ${currentWord.article} ${currentWord.word}`;
-
-    if(lives <= 0){
-
-        setTimeout(gameOver, 1000);
-        return;
-    }
-
-    setTimeout(nextWord, 1000);
-}
-
-function gameOver(){
-
-if(score > highscore){
-
-    highscore = score;
-
-    localStorage.setItem("dddHighscore",highscore);
-}
-    
-    updateUI();
-    
-    gameRunning = false;
-    clearInterval(timer);
-
-    document.getElementById("word").innerHTML =
-        "GAME OVER";
-
-    document.getElementById("message").innerHTML =
-        `Final Score: ${score}`;
-
-    document.getElementById("startBtn").style.display =
-        "inline-block";
-}
-
-document.getElementById("startBtn")
-.addEventListener("click", () => startGame(false));
-
-document.getElementById("survivalBtn")
-.addEventListener("click", () => startGame(true));
-
-document.addEventListener("keydown",(e)=>{
-
-    const k = e.key.toLowerCase();
-
-    if(k === "a") answer("der");
-    if(k === "s") answer("die");
-    if(k === "d") answer("das");
-
+// ── Level buttons ──────────────────────────────────────
+document.querySelectorAll('.level-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (gameRunning) return;
+    document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedLevel = btn.dataset.level;
+  });
 });
 
+// ── Word pool ──────────────────────────────────────────
+function getPool() {
+  return words.filter(w => w.level === selectedLevel);
+}
+
+function randomWord() {
+  const pool = getPool();
+  if (!pool.length) return null;
+  // avoid repeating the same word twice in a row
+  let w;
+  let tries = 0;
+  do {
+    w = pool[Math.floor(Math.random() * pool.length)];
+    tries++;
+  } while (currentWord && w.word === currentWord.word && pool.length > 1 && tries < 10);
+  return w;
+}
+
+// ── UI helpers ─────────────────────────────────────────
+function livesDisplay(n) {
+  return '❤️'.repeat(Math.max(0, n)) + (n < 3 ? '🖤'.repeat(3 - Math.max(0, n)) : '');
+}
+
+function updateStats() {
+  document.getElementById('scoreVal').textContent = score;
+  document.getElementById('livesVal').textContent = livesDisplay(lives);
+  document.getElementById('comboVal').textContent = combo;
+  document.getElementById('highVal').textContent  = highscore;
+}
+
+function setMessage(text, type = '') {
+  const el = document.getElementById('message');
+  el.textContent = text;
+  el.className = type;
+}
+
+function flashWord(text) {
+  const el = document.getElementById('wordDisplay');
+  el.classList.add('flash');
+  setTimeout(() => {
+    el.textContent = text;
+    el.classList.remove('flash');
+  }, 100);
+}
+
+// ── Timer ──────────────────────────────────────────────
+function startTimer(limit) {
+  clearInterval(timer);
+  let remaining = limit;
+  const bar = document.getElementById('timerBar');
+  bar.style.width = '100%';
+  bar.style.background = 'var(--timer-ok)';
+
+  timer = setInterval(() => {
+    remaining -= 20;
+    const pct = remaining / limit;
+    bar.style.width = (pct * 100) + '%';
+
+    if      (pct > 0.5) bar.style.background = 'var(--timer-ok)';
+    else if (pct > 0.25) bar.style.background = 'var(--timer-warn)';
+    else                 bar.style.background = 'var(--timer-bad)';
+
+    if (remaining <= 0) {
+      clearInterval(timer);
+      onWrong();
+    }
+  }, 20);
+}
+
+// ── Game flow ──────────────────────────────────────────
+function startGame(mode) {
+  if (words.length === 0) {
+    alert('Words not loaded yet – please wait a moment.');
+    return;
+  }
+
+  const pool = getPool();
+  if (!pool.length) {
+    alert(`No words found for level ${selectedLevel}.`);
+    return;
+  }
+
+  survivalMode = mode;
+  lastMode     = mode;
+  score        = 0;
+  lives        = 3;
+  combo        = 0;
+  gameRunning  = true;
+  currentWord  = null;
+
+  updateStats();
+  setMessage('');
+
+  document.getElementById('startScreen').style.display   = 'none';
+  document.getElementById('gameOverScreen').style.display= 'none';
+  document.getElementById('modeBadge').style.display     = survivalMode ? 'inline-block' : 'none';
+
+  nextWord();
+}
+
+function nextWord() {
+  currentWord = randomWord();
+  if (!currentWord) { gameOver(); return; }
+
+  flashWord(currentWord.word);
+
+  if (survivalMode) {
+    timeLimit = Math.max(700, 3500 - score * 15);
+  } else {
+    timeLimit = Math.max(1500, 5000 - combo * 50);
+  }
+
+  startTimer(timeLimit);
+}
+
+function answer(choice) {
+  if (!gameRunning || !currentWord) return;
+  clearInterval(timer);
+
+  if (choice === currentWord.article) {
+    onCorrect();
+  } else {
+    onWrong();
+  }
+}
+
+function onCorrect() {
+  combo++;
+  const bonus = Math.floor(combo / 5);
+
+  // Speed bonus: if more than 60% time remaining
+  const pct = parseFloat(document.getElementById('timerBar').style.width) || 0;
+  const speedBonus = pct > 60 ? 2 : 0;
+
+  const earned = 1 + bonus + speedBonus;
+  score += earned;
+
+  let msg = `✅ +${earned}`;
+  if (combo > 1)       msg += `  🔥×${combo}`;
+  if (speedBonus > 0)  msg += '  ⚡Fast!';
+
+  setMessage(msg, 'correct');
+  updateStats();
+  nextWord();
+}
+
+function onWrong() {
+  lives--;
+  combo = 0;
+  updateStats();
+
+  setMessage(`❌ ${currentWord.article.toUpperCase()} ${currentWord.word}`, 'wrong');
+
+  if (lives <= 0) {
+    setTimeout(gameOver, 900);
+  } else {
+    setTimeout(nextWord, 1000);
+  }
+}
+
+function gameOver() {
+  clearInterval(timer);
+  gameRunning = false;
+
+  const isNewBest = score > highscore;
+  if (isNewBest) {
+    highscore = score;
+    localStorage.setItem('dddHighscore', highscore);
+  }
+
+  updateStats();
+
+  document.getElementById('wordDisplay').textContent = '—';
+  document.getElementById('modeBadge').style.display = 'none';
+  setMessage('');
+
+  const goScreen = document.getElementById('gameOverScreen');
+  document.getElementById('goScore').textContent = score;
+  document.getElementById('goSub').textContent   = `${survivalMode ? 'Survival' : 'Classic'} · ${selectedLevel}`;
+  document.getElementById('goNewBest').style.display = isNewBest ? 'block' : 'none';
+
+  goScreen.style.display = 'flex';
+
+  // timerBar reset
+  const bar = document.getElementById('timerBar');
+  bar.style.width = '0%';
+}
+
+// ── Play again (same mode) ──────────────────────────────
+document.getElementById('playAgainBtn').addEventListener('click', () => {
+  document.getElementById('gameOverScreen').style.display = 'none';
+  startGame(lastMode);
+});
+
+// ── Start buttons ──────────────────────────────────────
+document.getElementById('startBtn')   .addEventListener('click', () => startGame(false));
+document.getElementById('survivalBtn').addEventListener('click', () => startGame(true));
+
+// ── Keyboard ───────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  const k = e.key.toLowerCase();
+  if (k === 'a') answer('der');
+  if (k === 's') answer('die');
+  if (k === 'd') answer('das');
+});
+
+// ── Init ───────────────────────────────────────────────
 loadWords();
-
 </script>
-
 </body>
 </html>
